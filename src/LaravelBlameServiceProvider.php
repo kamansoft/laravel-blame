@@ -2,9 +2,9 @@
 
 namespace Kamansoft\LaravelBlame;
 
+use Kamansoft\LaravelBlame\Commands\LaravelBlameCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use Kamansoft\LaravelBlame\Commands\LaravelBlameCommand;
 
 class LaravelBlameServiceProvider extends PackageServiceProvider
 {

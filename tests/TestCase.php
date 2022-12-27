@@ -3,8 +3,8 @@
 namespace Kamansoft\LaravelBlame\Tests;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Orchestra\Testbench\TestCase as Orchestra;
 use Kamansoft\LaravelBlame\LaravelBlameServiceProvider;
+use Orchestra\Testbench\TestCase as Orchestra;
 
 class TestCase extends Orchestra
 {

@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace Kamansoft\LaravelBlame\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class LaravelBlameCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'laravel-blame';
 
     public $description = 'My command';
 

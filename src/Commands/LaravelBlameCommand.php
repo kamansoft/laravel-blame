@@ -8,7 +8,7 @@ class LaravelBlameCommand extends Command
 {
     public $signature = 'laravel-blame';
 
-    public $description = 'My command';
+    public $description = '';
 
     public function handle(): int
     {

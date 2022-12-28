@@ -3,6 +3,7 @@
 namespace Kamansoft\LaravelBlame;
 
 use Kamansoft\LaravelBlame\Commands\LaravelBlameCommand;
+use Kamansoft\LaravelBlame\Commands\SystemUserCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -19,7 +20,9 @@ class LaravelBlameServiceProvider extends PackageServiceProvider
             ->name('laravel-blame')
             ->hasConfigFile()
             ->hasViews()
-            ->hasMigration('create_laravel-blame_table')
-            ->hasCommand(LaravelBlameCommand::class);
+            //->hasMigration('create_laravel-blame_table')
+            ->hasCommands([
+                SystemUserCommand::class
+            ]);
     }
 }

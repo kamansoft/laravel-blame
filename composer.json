@@ -34,7 +34,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Kamansoft\\LaravelBlame\\": "src",
+            "Kamansoft\\LaravelBlame\\": "src/",
             "Kamansoft\\LaravelBlame\\Database\\Factories\\": "database/factories"
         }
     },

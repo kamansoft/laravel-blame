@@ -7,5 +7,7 @@ return [
     'system_user_email' => env('BLAME_SYSTEM_USER_EMAIL', 'system'.'@'.explode('/', config('app.url'))[2]),
     'create_by_field_name' => 'created_by',
     'update_by_field_name' => 'updated_by',
+    'migration_name_prefix' => 'add_blame_fields_to_',
+    'migration_name_suffix' => '_table',
 
 ];

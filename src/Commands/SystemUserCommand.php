@@ -2,6 +2,9 @@
 
 namespace Kamansoft\LaravelBlame\Commands;
 
+use http\Exception\RuntimeException;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Kamansoft\LaravelBlame\Contracts\HandleEnvFile;
 use Kamansoft\LaravelBlame\Traits\EnvFileHandler;
@@ -12,13 +15,15 @@ class SystemUserCommand extends \Illuminate\Console\Command implements HandleEnv
 
     public static string $system_user_id_const_name = 'BLAME_SYSTEM_USER_ID';
 
+    private string $pkName="";
+
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
     protected $signature = 'blame:set:systemuser
-        {--id= : If set, this command will check for a user with that id, and if found, will set the system user id to that user id, otherwise a new user with that id will be created }
+        {--key= : If a value is passed , this command will check for a user with that value as primary key,  if found, will set the system user id to that value, otherwise a new user with that primary key value  will be created }
     ';
 
     /**
@@ -26,90 +31,111 @@ class SystemUserCommand extends \Illuminate\Console\Command implements HandleEnv
      *
      * @var string
      */
-    protected $description = 'Add the system user needed for klorchid';
+    protected $description = 'Add the system user needed fields in a laravel project table, in order for models to work with laravel blame ';
+
+
+    private function getNewUserModelInstance(array $fields_values=[]){
+        if(!$this->validateAuthEloquentModel()){
+            throw new RuntimeException('This command needs an eloquent model to handle users from your persistent storage, you might set this as the users.model value at providers section the of auth config files');
+        }
+
+
+        //return App::make()
+        return app()->make(config('auth.providers.users.model'));
+    }
+
+    public function getPkName(){
+        if (empty($this->pkName)){
+            $this->pkName=$this->getNewUserModelInstance()->getKeyName();
+        }
+        return $this->pkName;
+    }
 
     /**
      * Execute the console command.
      *
      * @return int
      */
-    public function handle()
+    public function handle():int
     {
-        if (empty($this->option('id'))) {
-            $this->info('No id from command  param');
-            if (empty(env(static::$system_user_id_const_name))) {
-                $this->info('No id from env file');
-                $this->checkAndSetSystemUser();
-            } else {
-                $this->info('id from env file');
-                $this->checkAndSetSystemUser(env(static::$system_user_id_const_name));
-            }
-        } else {
-            $this->info('id from command  param');
-            $this->checkAndSetSystemUser($this->option('id'));
+
+        if(!$this->validateAuthEloquentModel()){
+            $this->line('systemuser set command execution aborted !');
+            return self::FAILURE;
         }
 
-        $this->line('System User set Successfully');
+        $key=$this->option('key');
+        if (empty($key)) {
+            $this->info('No user primary key value from command param');
+            if (empty(env(static::$system_user_id_const_name))) {
+                $this->info('No user primary key value from env file');
+            } else {
+                $this->info('Got user primary key value from env file');
+                $key=env(static::$system_user_id_const_name);
+            }
+        } else {
+            $this->info('Got user primary key value from command  param');
+        }
+
+        if ($this->checkAndSetSystemUser($key)){
+            $this->line('System User set Successfully');
+            return self::SUCCESS;
+        }
+
+        $this->error('System User set fail');
+        return self::SUCCESS;
+
+
     }
 
-    public function checkAndSetSystemUser($id = null)
+
+    public function validateAuthEloquentModel(){
+        if (!config()->has('auth.providers.users.model')){
+            $this->error('This command needs an eloquent model to handle users from your persistent storage, you might set this as the users.model value at providers section the of auth config files  ');
+            return false;
+        }
+        return true;
+    }
+
+    public function checkAndSetSystemUser($key = null)
     {
         $system_user_data = [
-            'id' => $id,
             'name' => config('blame.system_user_name'),
             'email' => config('blame.system_user_email'),
             'password' => '',
         ];
 
-        if (! $this->userWithIdExists($id)) {
-            if (config()->has('auth.providers.users.model')) {
-                $user_model = config('auth.providers.users.model');
-                $system_user = new $user_model($system_user_data);
-                if (! empty($id)) {
-                    $system_user->id = $id;
-                }
-                try {
-                    echo 'creating form model';
-                    //dd($system_user);
-                    $system_user->save();
-                    $created_system_user_id = $system_user->id;
-                } catch (\Exception $exception) {
-                    throw new \RuntimeException(static::class." Can't create new user, ".$exception->getMessage());
-                }
-            } elseif (config()->has('auth.providers.users.table')) {
-                $user_table = config('auth.providers.users.table');
-                if (! empty($id)) {
-                    $system_user_data['id'] = $id;
-                }
-                try {
-                    echo 'creating form table';
-                    //todo: add migration executed comprobation in order to add updated by and created by fields
-                    $created_system_user_id = DB::table($user_table)->insertGetId(
-                        $system_user_data
-                    );
-                } catch (\Exception $exception) {
-                    throw new \RuntimeException('Cant create new user, '.$exception->getMessage());
-                }
+        /*
+        if ( $this->userWithPkExists($key)) {
+            return $this->setEnvValue(static::$system_user_id_const_name, $key);
+        }*/
+
+        if ( ! $this->userWithPkExists($key)) {
+            $system_user = $this->getNewUserModelInstance();
+            $system_user->fill($system_user_data);
+            $pkname = $this->getPkName();
+            if (!empty($key)) {
+                $system_user->$pkname = $key;
             }
-            $id = $created_system_user_id;
+            try {
+                $system_user->save();
+                $key = $system_user->getKey();
+            } catch (\Exception $exception) {
+                $this->error("Can't create new user");
+                $this->line($exception->getMessage());
+                return false;
+            }
         }
-        $this->setEnvValue(static::$system_user_id_const_name, $id);
+        return $this->setEnvValue(static::$system_user_id_const_name, $key);
     }
 
-    public function userWithIdExists(?int $id): bool
+
+
+    public function userWithPkExists($key): bool
     {
-        if (config()->has('auth.providers.users.model')) {
-            $user_model = config('auth.providers.users.model');
-
-            return $user_model::where('id', $id)->exists();
-        }
-
-        if (config()->has('auth.providers.users.table')) {
-            $user_table = config('auth.providers.users.table');
-
-            return DB::table($user_table)->where('id', $id)->exists();
-        }
-
-        throw new \RuntimeException(static::class.' unable to determinate from where to retrieve users records. Providers users model or table is not specified. Please set providers.users.model or providers.users.table on auth config file');
+        $user_model = config('auth.providers.users.model');
+        return $user_model::where($this->getPkName(), $key)->exists();
+        //throw new \RuntimeException(static::class.' unable to determinate from where to retrieve users records. Providers users model or table is not specified. Please set providers.users.model or providers.users.table on auth config file');
     }
+
 }

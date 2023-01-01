@@ -13,11 +13,11 @@ interface HandleEnvFile
     /**
      * @param  string  $constant
      * @param  string  $value
-     * @return self
+     * @return bool
      *
      * @throws Exception
      */
-    public function setEnvValue(string $constant, string $value = 'null'): self;
+    public function setEnvValue(string $constant, string $value = 'null'): bool;
 
     /**
      * @param  string  $file

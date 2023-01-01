@@ -1,12 +1,9 @@
 <?php
 
-
 namespace Kamansoft\LaravelBlame\Database\Migrations;
 
-
-use Illuminate\Support\Str;
-
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Str;
 
 class BlameMigrationCreator
 {
@@ -34,13 +31,12 @@ class BlameMigrationCreator
     /**
      * Create a new migration creator instance.
      *
-     * @param Filesystem $files
-     * @param string $customStubPath
+     * @param  Filesystem  $files
+     * @param  string  $customStubPath
      * @return void
      */
     public function __construct(Filesystem $files, $customStubPath)
     {
-
         $this->files = $files;
         $this->customStubPath = $customStubPath;
     }
@@ -48,10 +44,10 @@ class BlameMigrationCreator
     /**
      * @param $name
      * @param $path
-     * @param null $table
+     * @param  null  $table
      * @return string
      */
-    public function create($name, $path, $table )
+    public function create($name, $path, $table)
     {
         $this->ensureMigrationDoesntAlreadyExist($name, $path);
 
@@ -76,20 +72,19 @@ class BlameMigrationCreator
         return $path;
     }
 
-
     /**
      * Ensure that a migration with the given name doesn't already exist.
      *
-     * @param string $name
-     * @param string $migrationPath
+     * @param  string  $name
+     * @param  string  $migrationPath
      * @return void
      *
      * @throws \InvalidArgumentException
      */
     protected function ensureMigrationDoesntAlreadyExist($name, $migrationPath = null)
     {
-        if (!empty($migrationPath)) {
-            $migrationFiles = $this->files->glob($migrationPath . '/*.php');
+        if (! empty($migrationPath)) {
+            $migrationFiles = $this->files->glob($migrationPath.'/*.php');
 
             foreach ($migrationFiles as $migrationFile) {
                 $this->files->requireOnce($migrationFile);
@@ -101,19 +96,17 @@ class BlameMigrationCreator
         }
     }
 
-
     /**
      * Get the migration stub file.
      *
-     * @param string|null $table
+     * @param  string|null  $table
      * @return string
      */
     protected function getStub($table)
     {
-
-        $stub = $this->files->exists($customPath = $this->customStubPath . '/migration.add.blaming.int.fields.stub')
+        $stub = $this->files->exists($customPath = $this->customStubPath.'/migration.add.blaming.int.fields.stub')
             ? $customPath
-            : $this->stubPath() . '/migration.add.blaming.int.fields.stub';
+            : $this->stubPath().'/migration.add.blaming.int.fields.stub';
 
         return $this->files->get($stub);
     }
@@ -121,9 +114,9 @@ class BlameMigrationCreator
     /**
      * Populate the place-holders in the migration stub.
      *
-     * @param string $name
-     * @param string $stub
-     * @param string|null $table
+     * @param  string  $name
+     * @param  string  $stub
+     * @param  string|null  $table
      * @return string
      */
     protected function populateStub($name, $stub, $table)
@@ -136,7 +129,7 @@ class BlameMigrationCreator
         // Here we will replace the table place-holders with the table specified by
         // the developer, which is useful for quickly creating a tables creation
         // or update migration from the console instead of typing it manually.
-        if (!is_null($table)) {
+        if (! is_null($table)) {
             $stub = str_replace(
                 ['DummyTable', '{{ table }}', '{{table}}'],
                 $table, $stub
@@ -149,7 +142,7 @@ class BlameMigrationCreator
     /**
      * Get the class name of a migration name.
      *
-     * @param string $name
+     * @param  string  $name
      * @return string
      */
     protected function getClassName($name)
@@ -160,19 +153,19 @@ class BlameMigrationCreator
     /**
      * Get the full path to the migration.
      *
-     * @param string $name
-     * @param string $path
+     * @param  string  $name
+     * @param  string  $path
      * @return string
      */
     protected function getPath($name, $path)
     {
-        return $path . '/' . $this->getDatePrefix() . '_' . $name . '.php';
+        return $path.'/'.$this->getDatePrefix().'_'.$name.'.php';
     }
 
     /**
      * Fire the registered post create hooks.
      *
-     * @param string|null $table
+     * @param  string|null  $table
      * @return void
      */
     protected function firePostCreateHooks($table)
@@ -185,7 +178,7 @@ class BlameMigrationCreator
     /**
      * Register a post migration create hook.
      *
-     * @param \Closure $callback
+     * @param  \Closure  $callback
      * @return void
      */
     public function afterCreate(Closure $callback)
@@ -210,7 +203,7 @@ class BlameMigrationCreator
      */
     public function stubPath()
     {
-        return __DIR__ . '/stubs';
+        return __DIR__.'/stubs';
     }
 
     /**
@@ -222,6 +215,4 @@ class BlameMigrationCreator
     {
         return $this->files;
     }
-
-
 }

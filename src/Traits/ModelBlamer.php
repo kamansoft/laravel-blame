@@ -6,14 +6,10 @@ use Illuminate\Support\Facades\Auth;
 
 trait ModelBlamer
 {
-
     use UserModelForAuth;
-
-
 
     protected static function bootModelBlamer()
     {
-
         static::creating(function ($model) {
             $model->blameOnCreate();
         });
@@ -38,6 +34,7 @@ trait ModelBlamer
         } else {
             $to_return = config('blame.system_user_id');
         }
+
         return $to_return;
     }
 
@@ -49,15 +46,11 @@ trait ModelBlamer
 
     public function creator(): BelongsTo
     {
-
-        return $this->belongsTo(config('auth.providers.users.model'),  config('blame.created_by_field_name'), $this->getUsersModelPkName());
+        return $this->belongsTo(config('auth.providers.users.model'), config('blame.created_by_field_name'), $this->getUsersModelPkName());
     }
-
 
     public function updater(): BelongsTo
     {
         return $this->belongsTo(config('auth.providers.users.model'), config('blame.updated_by_field_name'), $this->getUsersModelPkName());
     }
-
-
 }

@@ -27,11 +27,11 @@ trait EnvFileHandler
 
         if (str_contains($str, $constant) and $value === env($constant)) {
             $this->info("Constant already set to $value");
+
             return true;
         }
 
         throw new \RuntimeException('Cant set new value of  '.$constant.' entry on the project´s .env  file, the constant was previously set in the past, please remove the line with: " '.$constant.'='.env($constant).' " from your .env file and run this command again ');
-
     }
 
     /**

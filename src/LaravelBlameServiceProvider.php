@@ -2,6 +2,7 @@
 
 namespace Kamansoft\LaravelBlame;
 
+use _PHPStan_5c71ab23c\Nette\Neon\Exception;
 use Kamansoft\LaravelBlame\Commands\BlameFieldsMigrationCommand;
 use Kamansoft\LaravelBlame\Commands\SystemUserCommand;
 use Kamansoft\LaravelBlame\Database\Migrations\BlameMigrationCreator;
@@ -11,19 +12,21 @@ use Spatie\LaravelPackageTools\Commands\InstallCommand;
 
 class LaravelBlameServiceProvider extends PackageServiceProvider
 {
+    /**
+     * @throws Exception
+     */
     public function configurePackage(Package $package): void
     {
-        /*
-         * This class is a Package Service Provider
-         *
-         * More info: https://github.com/spatie/laravel-package-tools
-         */
+        $package
+            ->name('laravel-blame');
+
+        if (!config()->has('auth.providers.users.model')){
+            throw new \Exception($package->name .' package needs an eloquent model to handle users from your persistent storage, you might set this as the users.model value at providers section the of auth config files in your laravel project');
+        }
 
         $this->registerBlameMigrationCreator();
         $this->registerBlameMigrationCommandSingleton();
-
         $package
-            ->name('laravel-blame')
             ->hasConfigFile()
             ->hasViews()
             //->hasMigration('create_laravel-blame_table')

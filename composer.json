@@ -1,6 +1,6 @@
 {
     "name": "kamansoft/laravel-blame",
-    "description": "A tool to ease the responsability persistance per record using eloquent models",
+    "description": "A tool to easily work with the updated_by and creacated_by fields on your laravel eloquent models  ",
     "keywords": [
         "kamansoft",
         "laravel",

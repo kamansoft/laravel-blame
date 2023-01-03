@@ -56,7 +56,7 @@ class BlameFieldsMigrationCommand extends BaseCommand
             return self::FAILURE;
         }
 
-        $migration_name = config('private_blame..migration_name_prefix').$this->argument('table').config('private_blame..migration_name_suffix');
+        $migration_name = config('blame.migration_name_prefix').$this->argument('table').config('blame.migration_name_suffix');
 
         $this->writeMigration($migration_name, $this->argument('table'));
 

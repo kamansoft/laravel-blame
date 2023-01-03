@@ -24,7 +24,7 @@ class LaravelBlameServiceProvider extends PackageServiceProvider
         if (! config()->has('auth.providers.users.model')) {
             throw new \Exception($package->name.' package needs an eloquent model to handle users from your persistent storage, you might set this as the users.model value at providers section the of auth config files in your laravel project');
         }
-
+        $this->mergeConfigFrom(__DIR__.'/../config/private_blame.php', 'blame');
         $this->registerBlameMigrationCreator();
         $this->registerBlameMigrationCommandSingleton();
         $package

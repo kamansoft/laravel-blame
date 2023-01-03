@@ -15,7 +15,7 @@ interface HandleEnvFile
      * @param  string  $value
      * @return bool
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public function setEnvValue(string $constant, string $value = 'null'): bool;
 

@@ -92,7 +92,7 @@ class BlameMigrationCreator
         }
 
         if (class_exists($className = $this->getClassName($name))) {
-            throw new InvalidArgumentException("A {$className} class already exists.");
+            throw new \InvalidArgumentException("A {$className} class already exists.");
         }
     }
 
@@ -181,7 +181,7 @@ class BlameMigrationCreator
      * @param  \Closure  $callback
      * @return void
      */
-    public function afterCreate(Closure $callback)
+    public function afterCreate(\Closure $callback)
     {
         $this->postCreate[] = $callback;
     }

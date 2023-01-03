@@ -15,17 +15,17 @@ return new class extends Migration
     {
 
         Schema::table('{{ table }}', function (Blueprint $table) {
-            $system_user_id = config('blame.system_user_id');
-            $table->unsignedBigInteger(config('blame.create_by_field_name'))->default($system_user_id);
-            $table->unsignedBigInteger(config('blame.update_by_field_name'))->default($system_user_id);
+            $system_user_id = env('BLAME_SYSTEM_USER_ID');
+            $table->unsignedBigInteger(config('blame.created_by_field_name'))->default($system_user_id);
+            $table->unsignedBigInteger(config('blame.updated_by_field_name'))->default($system_user_id);
         });
         Schema::table('{{ table }}', function (Blueprint $table) {
-            $table->unsignedBigInteger(config('blame.create_by_field_name'))->default(null)->change();
-            $table->unsignedBigInteger(config('blame.update_by_field_name'))->default(null)->change();
+            $table->unsignedBigInteger(config('blame.created_by_field_name'))->default(null)->change();
+            $table->unsignedBigInteger(config('blame.updated_by_field_name'))->default(null)->change();
         });
         Schema::table('{{ table }}', function (Blueprint $table) {
-            $table->foreign(config('blame.create_by_field_name'))->references('id')->on('users');
-            $table->foreign(config('blame.update_by_field_name'))->references('id')->on('users');
+            $table->foreign(config('blame.created_by_field_name'))->references('id')->on('users');
+            $table->foreign(config('blame.updated_by_field_name'))->references('id')->on('users');
         });
 
 
@@ -39,10 +39,10 @@ return new class extends Migration
     public function down()
     {
         Schema::table('{{ table }}', function (Blueprint $table) {
-            $table->dropForeign('{{ table }}_'.config('blame.update_by_field_name').'_foreign');
-            $table->dropForeign('{{ table }}_'.config('blame.create_by_field_name').'_foreign');
-            $table->dropColumn(config('blame.update_by_field_name'));
-            $table->dropColumn(config('blame.create_by_field_name'));
+            $table->dropForeign('{{ table }}_'.config('blame.updated_by_field_name').'_foreign');
+            $table->dropForeign('{{ table }}_'.config('blame.created_by_field_name').'_foreign');
+            $table->dropColumn(config('blame.updated_by_field_name'));
+            $table->dropColumn(config('blame.created_by_field_name'));
         });
     }
 };

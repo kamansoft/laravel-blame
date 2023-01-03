@@ -2,10 +2,6 @@
 
 namespace Kamansoft\LaravelBlame\Commands;
 
-use http\Exception\RuntimeException;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\DB;
 use Kamansoft\LaravelBlame\Contracts\HandleEnvFile;
 use Kamansoft\LaravelBlame\Traits\EnvFileHandler;
 use Kamansoft\LaravelBlame\Traits\UserModelForAuth;
@@ -16,7 +12,6 @@ class SystemUserCommand extends \Illuminate\Console\Command implements HandleEnv
     use UserModelForAuth;
 
     public static string $system_user_id_const_name = 'BLAME_SYSTEM_USER_ID';
-
 
     /**
      * The name and signature of the console command.
@@ -34,7 +29,6 @@ class SystemUserCommand extends \Illuminate\Console\Command implements HandleEnv
      */
     protected $description = 'Add the system user needed fields in a laravel project table, in order for models to work with laravel blame ';
 
-
     /**
      * Execute the console command.
      *
@@ -42,9 +36,9 @@ class SystemUserCommand extends \Illuminate\Console\Command implements HandleEnv
      */
     public function handle(): int
     {
-
-        if (!$this->validateAuthEloquentModel()) {
+        if (! $this->validateAuthEloquentModel()) {
             $this->line('systemuser set command execution aborted !');
+
             return self::FAILURE;
         }
 
@@ -63,54 +57,52 @@ class SystemUserCommand extends \Illuminate\Console\Command implements HandleEnv
 
         if ($this->checkAndSetSystemUser($key)) {
             $this->line('System User set Successfully');
+
             return self::SUCCESS;
         }
 
         $this->error('System User set fail');
+
         return self::FAILURE;
-
-
     }
-
 
     public function createNewSystemUserUser($key = null)
     {
         $system_user_data = [
             'name' => config('blame.system_user_name'),
             'email' => config('blame.system_user_email'),
-            'password' => '',//you cant log in with this user
+            'password' => '', //you cant log in with this user
         ];
         $system_user = $this->getUserModelForAuthInstance()->fill($system_user_data);
         $pkname = $this->getUsersModelPkName();
-        if (!empty($key)) {
+        if (! empty($key)) {
             $system_user->$pkname = $key;
         }
         $system_user->save();
-        return $system_user->getKey();
 
+        return $system_user->getKey();
     }
 
     public function checkAndSetSystemUser($key = null): bool
     {
-
-
-        if (!$this->userWithPkExists($key)) {
+        if (! $this->userWithPkExists($key)) {
             try {
-                $key=$this->createNewSystemUserUser($key);
+                $key = $this->createNewSystemUserUser($key);
             } catch (\Exception $exception) {
                 $this->error("Can't create new user");
                 $this->line($exception->getMessage());
+
                 return false;
             }
         }
+
         return $this->setEnvValue(static::$system_user_id_const_name, $key);
     }
-
 
     public function userWithPkExists($key): bool
     {
         $user_model = config('auth.providers.users.model');
-        return $user_model::where($this->getUsersModelPkName(), $key)->exists();
-     }
 
+        return $user_model::where($this->getUsersModelPkName(), $key)->exists();
+    }
 }

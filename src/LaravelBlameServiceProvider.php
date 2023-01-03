@@ -3,6 +3,7 @@
 namespace Kamansoft\LaravelBlame;
 
 use _PHPStan_5c71ab23c\Nette\Neon\Exception;
+use Illuminate\Support\Facades\Artisan;
 use Kamansoft\LaravelBlame\Commands\BlameFieldsMigrationCommand;
 use Kamansoft\LaravelBlame\Commands\SystemUserCommand;
 use Kamansoft\LaravelBlame\Database\Migrations\BlameMigrationCreator;
@@ -37,10 +38,11 @@ class LaravelBlameServiceProvider extends PackageServiceProvider
             ->hasInstallCommand(function (InstallCommand $command) {
                 $command
                     ->startWith(function (InstallCommand $command) {
+                        $command->line('creating system user');
+                        Artisan::call('blame:set:systemuser');
                     })
-                    ->askToRunMigrations()
-                    ->copyAndRegisterServiceProviderInApp()
-                    ->askToStarRepoOnGitHub('kamanosft/laravel-blade');
+                    ->publishConfigFile()
+                    ->askToStarRepoOnGitHub('kamansoft/laravel-blade');
             });
     }
 

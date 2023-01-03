@@ -17,7 +17,7 @@ class BlameFieldsMigrationCommand extends BaseCommand
      * @var string
      */
     protected $signature = 'blame:make:migration
-        {--table= : the table to add blaming fields.}
+        {table : the table to add blaming fields.}
         {--path= : The location where the migration file should be created}
     ';
 
@@ -52,13 +52,13 @@ class BlameFieldsMigrationCommand extends BaseCommand
      */
     public function handle(): int
     {
-        if (! $this->checkIfTableExits($this->option('table'))) {
+        if (! $this->checkIfTableExits($this->argument('table'))) {
             return self::FAILURE;
         }
 
-        $migration_name = config('blame.migration_name_prefix').$this->option('table').config('blame.migration_name_suffix');
+        $migration_name = config('private_blame..migration_name_prefix').$this->argument('table').config('private_blame..migration_name_suffix');
 
-        $this->writeMigration($migration_name, $this->option('table'));
+        $this->writeMigration($migration_name, $this->argument('table'));
 
         return self::SUCCESS;
     }
@@ -66,7 +66,7 @@ class BlameFieldsMigrationCommand extends BaseCommand
     public function checkIfTableExits(string $table_name): bool
     {
         if (Schema::hasTable($table_name)) {
-            $this->info($table_name.' exits on db');
+            $this->info($table_name.' table exits..');
 
             return true;
         }

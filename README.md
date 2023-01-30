@@ -5,7 +5,9 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/kamansoft/laravel-blame/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/kamansoft/laravel-blame/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/kamansoft/laravel-blame.svg?style=flat-square)](https://packagist.org/packages/kamansoft/laravel-blame)
 
-A laravel package that will ease the usage of the normally called **created_by** and **update_by** extra fields used to stablish responsabilites on records persistance create or update events,  with similar fashion as the "timestamp fields" on Eloquent's models, it automatically fills the fields with the primary key of the currently logged user or with a preconfigured system user id. 
+## update_by and created_by fields in your laravel model ?
+
+This is a laravel package that will ease the usage of the normally called **created_by** and **update_by** extra fields used to stablish responsabilites on records persistance create or update events,  with similar fashion as the "timestamp fields" on Eloquent's models, it automatically fills the fields with the primary key of the currently logged user or with a preconfigured system user id. 
 
 
 ## Requirements

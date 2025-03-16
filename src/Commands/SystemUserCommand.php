@@ -31,8 +31,6 @@ class SystemUserCommand extends \Illuminate\Console\Command implements HandleEnv
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
     public function handle(): int
     {
@@ -71,7 +69,7 @@ class SystemUserCommand extends \Illuminate\Console\Command implements HandleEnv
         $system_user_data = [
             'name' => config('blame.system_user_name'),
             'email' => config('blame.system_user_email'),
-            'password' => '', //you cant log in with this user
+            'password' => '', // you cant log in with this user
         ];
         $system_user = $this->getUserModelForAuthInstance()->fill($system_user_data);
         $pkname = $this->getUsersModelPkName();

@@ -31,7 +31,6 @@ class BlameMigrationCreator
     /**
      * Create a new migration creator instance.
      *
-     * @param  Filesystem  $files
      * @param  string  $customStubPath
      * @return void
      */
@@ -42,8 +41,6 @@ class BlameMigrationCreator
     }
 
     /**
-     * @param $name
-     * @param $path
      * @param  null  $table
      * @return string
      */
@@ -178,7 +175,6 @@ class BlameMigrationCreator
     /**
      * Register a post migration create hook.
      *
-     * @param  \Closure  $callback
      * @return void
      */
     public function afterCreate(\Closure $callback)

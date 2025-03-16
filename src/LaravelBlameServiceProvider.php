@@ -30,7 +30,7 @@ class LaravelBlameServiceProvider extends PackageServiceProvider
         $package
             ->hasConfigFile()
             ->hasViews()
-            //->hasMigration('create_laravel-blame_table')
+            // ->hasMigration('create_laravel-blame_table')
             ->hasCommands([
                 SystemUserCommand::class,
                 BlameFieldsMigrationCommand::class,

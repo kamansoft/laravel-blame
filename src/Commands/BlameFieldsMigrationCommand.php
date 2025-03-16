@@ -47,8 +47,6 @@ class BlameFieldsMigrationCommand extends BaseCommand
 
     /**
      * Execute the console command.
-     *
-     * @return int
      */
     public function handle(): int
     {
@@ -94,9 +92,6 @@ class BlameFieldsMigrationCommand extends BaseCommand
 
     /**
      * Write the migration file to disk.
-     *
-     * @param $name
-     * @param $table
      */
     protected function writeMigration($name, $table)
     {

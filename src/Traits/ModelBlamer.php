@@ -52,8 +52,6 @@ trait ModelBlamer
 
     /**
      * Relation with the user who created the model.
-     *
-     * @return BelongsTo
      */
     public function creator(): BelongsTo
     {
@@ -62,8 +60,6 @@ trait ModelBlamer
 
     /**
      * Relation with the user who last updated the model.
-     *
-     * @return BelongsTo
      */
     public function updater(): BelongsTo
     {

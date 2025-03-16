@@ -36,7 +36,7 @@ trait ModelBlamer
             $to_return = Auth::user()->getKey();
         } else {
             Log::warning(static::class.' Not logged user using system user');
-            $to_return = env('BLAME_SYSTEM_USER_ID');
+            $to_return = config('blame.system_user_id');
         }
 
         return $to_return;

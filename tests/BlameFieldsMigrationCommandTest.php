@@ -2,11 +2,8 @@
 
 namespace Kamansoft\LaravelBlame\Tests;
 
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Str;
-use Kamansoft\LaravelBlame\Database\Migrations\BlameMigrationCreator;
 
 class BlameFieldsMigrationCommandTest extends TestCase
 {
@@ -20,7 +17,7 @@ class BlameFieldsMigrationCommandTest extends TestCase
         $this->migrationsPath = database_path('migrations');
 
         // Create migrations directory if it doesn't exist
-        if (!File::isDirectory($this->migrationsPath)) {
+        if (! File::isDirectory($this->migrationsPath)) {
             File::makeDirectory($this->migrationsPath, 0755, true);
         }
 
@@ -42,7 +39,7 @@ class BlameFieldsMigrationCommandTest extends TestCase
         Schema::dropIfExists('test_table');
 
         // Clean up any generated migration files
-        $migrationFiles = File::glob($this->migrationsPath . '/*add_blame_fields_to_*_table.php');
+        $migrationFiles = File::glob($this->migrationsPath.'/*add_blame_fields_to_*_table.php');
         foreach ($migrationFiles as $file) {
             File::delete($file);
         }
@@ -63,8 +60,8 @@ class BlameFieldsMigrationCommandTest extends TestCase
     {
         // We'll simulate the migration creation manually since we're having issues with the command
         $tableName = 'test_table';
-        $fileName = date('Y_m_d_His') . '_add_blame_fields_to_' . $tableName . '_table.php';
-        $filePath = $this->migrationsPath . '/' . $fileName;
+        $fileName = date('Y_m_d_His').'_add_blame_fields_to_'.$tableName.'_table.php';
+        $filePath = $this->migrationsPath.'/'.$fileName;
 
         // Create a basic migration file
         $content = <<<PHP
@@ -110,7 +107,7 @@ PHP;
         File::put($filePath, $content);
 
         // Verify that the file exists with the expected pattern
-        $files = File::glob($this->migrationsPath . '/*add_blame_fields_to_' . $tableName . '_table.php');
+        $files = File::glob($this->migrationsPath.'/*add_blame_fields_to_'.$tableName.'_table.php');
         $this->assertNotEmpty($files, 'Migration file was not created');
     }
 
@@ -119,8 +116,8 @@ PHP;
     {
         // We'll simulate the migration creation manually
         $tableName = 'test_table';
-        $fileName = date('Y_m_d_His') . '_add_blame_fields_to_' . $tableName . '_table.php';
-        $filePath = $this->migrationsPath . '/' . $fileName;
+        $fileName = date('Y_m_d_His').'_add_blame_fields_to_'.$tableName.'_table.php';
+        $filePath = $this->migrationsPath.'/'.$fileName;
 
         // Create a basic migration file
         $content = <<<PHP
@@ -166,7 +163,7 @@ PHP;
         File::put($filePath, $content);
 
         // Get the generated migration file
-        $files = File::glob($this->migrationsPath . '/*add_blame_fields_to_' . $tableName . '_table.php');
+        $files = File::glob($this->migrationsPath.'/*add_blame_fields_to_'.$tableName.'_table.php');
         $this->assertNotEmpty($files, 'Migration file was not created');
 
         $migrationContent = File::get($files[0]);

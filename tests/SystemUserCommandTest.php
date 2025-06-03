@@ -2,9 +2,7 @@
 
 namespace Kamansoft\LaravelBlame\Tests;
 
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
-use Kamansoft\LaravelBlame\Commands\SystemUserCommand;
 use Kamansoft\LaravelBlame\Tests\Models\User;
 
 class SystemUserCommandTest extends TestCase
@@ -20,7 +18,7 @@ class SystemUserCommandTest extends TestCase
 
         // Ensure directory exists
         $directory = dirname($this->envFilePath);
-        if (!File::isDirectory($directory)) {
+        if (! File::isDirectory($directory)) {
             File::makeDirectory($directory, 0755, true);
         }
 
@@ -54,7 +52,7 @@ class SystemUserCommandTest extends TestCase
 
         // Check if BLAME_SYSTEM_USER_ID was set in env file
         $envContent = File::get($this->envFilePath);
-        $this->assertStringContainsString('BLAME_SYSTEM_USER_ID=' . $systemUser->id, $envContent);
+        $this->assertStringContainsString('BLAME_SYSTEM_USER_ID='.$systemUser->id, $envContent);
     }
 
     /** @test */
@@ -74,7 +72,7 @@ class SystemUserCommandTest extends TestCase
 
         // Check if BLAME_SYSTEM_USER_ID was set in env file with specific key
         $envContent = File::get($this->envFilePath);
-        $this->assertStringContainsString('BLAME_SYSTEM_USER_ID=' . $specificId, $envContent);
+        $this->assertStringContainsString('BLAME_SYSTEM_USER_ID='.$specificId, $envContent);
     }
 
     /** @test */
@@ -93,7 +91,7 @@ class SystemUserCommandTest extends TestCase
 
         // Check if BLAME_SYSTEM_USER_ID was set in env file
         $envContent = File::get($this->envFilePath);
-        $this->assertStringContainsString('BLAME_SYSTEM_USER_ID=' . $existingUser->id, $envContent);
+        $this->assertStringContainsString('BLAME_SYSTEM_USER_ID='.$existingUser->id, $envContent);
     }
 
     /** @test */

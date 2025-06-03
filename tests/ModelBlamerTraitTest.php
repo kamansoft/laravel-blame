@@ -9,6 +9,7 @@ use Kamansoft\LaravelBlame\Tests\Models\User;
 class ModelBlamerTraitTest extends TestCase
 {
     protected User $user;
+
     protected User $anotherUser;
 
     protected function setUp(): void
@@ -84,7 +85,7 @@ class ModelBlamerTraitTest extends TestCase
     /** @test */
     public function it_gets_correct_user_model_pk_name()
     {
-        $model = new TestModel();
+        $model = new TestModel;
         $this->assertEquals('id', $model->getUsersModelPkName());
     }
 }

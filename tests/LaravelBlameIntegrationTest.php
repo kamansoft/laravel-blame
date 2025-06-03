@@ -9,6 +9,7 @@ use Kamansoft\LaravelBlame\Tests\Models\User;
 class LaravelBlameIntegrationTest extends TestCase
 {
     protected User $systemUser;
+
     protected User $regularUser;
 
     protected function setUp(): void
@@ -19,7 +20,7 @@ class LaravelBlameIntegrationTest extends TestCase
         $this->systemUser = User::factory()->create([
             'id' => config('blame.system_user_id'),
             'name' => config('blame.system_user_name'),
-            'email' => config('blame.system_user_email')
+            'email' => config('blame.system_user_email'),
         ]);
 
         // Create a regular user

@@ -12,7 +12,7 @@ This is a laravel package that will ease the usage of the normally called **crea
 
 ## Requirements
 
-This packages was build taking in mind that you use laravel with an [eloquent **user model class** as auth provider](https://laravel.com/docs/9.x/authentication#introduction). So before installing you must make sure that your user eloquent model is set on the providers section of your auth config file like this:
+This package was build taking in mind that you use laravel with an [eloquent **user model class** as auth provider](https://laravel.com/docs/9.x/authentication#introduction). So before installing, you must make sure that your user eloquent model is set on the providers section of your auth config file like this:
 
 ```php
 //config/auth.php
@@ -24,6 +24,8 @@ This packages was build taking in mind that you use laravel with an [eloquent **
     ],
 ],
 ```
+### Laravel version.
+The Lasted version of this package was tested with laravel 9. Should be compatible with versions above also it should work with laravel 8 too, if you find any issue please open an [issue on github](https://github.com/kamansoft/laravel-blame/issues)
 
 
 ## Installation
@@ -36,20 +38,20 @@ You can install the package via composer:
 composer require kamansoft/laravel-blame
 ```
 
-Some times your laravel application will perform actions that persists records on the database without an authenticated or logged in user,  You can call this user as System User or any other name you want, but you must specify its id or primary key.
+Sometimes your laravel application will perform actions that persist records on the database without an authenticated or logged-in user, You can call this user as System User or any other name you want, but you must specify its id or primary key.
 
-To do so you can run the [system user command](#system-user-command) or the  package install comand:
+To do so, you can run the [system user command](#system-user-command) or the package install comand:
 
 ```bash
 php artisan blame:install
 ```
-The above command will publish the package config file and it will run the [system user command](#system-user-command) with no arguments. 
+The above command will publish the package config file, and it will run the [system user command](#system-user-command) with no arguments. 
 
 
 ## Usage
 
 
-You must first add the  **update_by** and **created_by** fields to the table's migration field in order to use it in your models.  
+You must first add the **update_by** and **created_by** fields to the table's migration field to use it in your models.  
 
 ```php
 //dabase/migrations/2023_01_02_154102_create_somes_table
@@ -77,7 +79,7 @@ return new class extends Migration
     }
 ```
 
-Then just make use of the [Modelblamer trait](https://github.com/kamansoft/laravel-blame/blob/c95967a0e15155562d1aa05a5fc6fb8e8d164ff8/src/Traits/ModelBlamer.php) on your eloquent models, and its [booting method](https://github.com/kamansoft/laravel-blame/blob/c95967a0e15155562d1aa05a5fc6fb8e8d164ff8/src/Traits/ModelBlamer.php#L11)  will take care of the rest. Also for the seek of a good practice let your model implement the [BlameableInterface](https://github.com/kamansoft/laravel-blame/blob/main/src/Contracts/ModelBlame.php) on your models. Then your model should look something like this 
+Then make use of the [Modelblamer trait](https://github.com/kamansoft/laravel-blame/blob/c95967a0e15155562d1aa05a5fc6fb8e8d164ff8/src/Traits/ModelBlamer.php) on your eloquent models, and its [booting method](https://github.com/kamansoft/laravel-blame/blob/c95967a0e15155562d1aa05a5fc6fb8e8d164ff8/src/Traits/ModelBlamer.php#L11) will take care of the rest. Also for the seek of a good practice let your model implement the [BlameableInterface](https://github.com/kamansoft/laravel-blame/blob/main/src/Contracts/ModelBlame.php) on your models. Then your model should look something like this 
 
 ```php
 //app/Models/SomeModel.php
@@ -100,16 +102,16 @@ class SomeModel extends Model implements ModelBlame
 
 ## Commands 
 
-This package ships two artisan commands as tools to ease the package usage simplifiying repetitive task like creating or updating the systemuser or adding the updated by and created by fields to your model's table. 
+This package ships two artisan commands as tools to ease the package usage simplifying a repetitive task like creating or updating the system user or adding the updated by and created by fields to your model's table. 
 
 ### Blame FIelds Migration command
 
-This command is primarly intend to be used when you need to update an existing table, adding the created_by and updated_by fields, it needs an argument with the name of the table to update.
+This command is primary intended to be used when you need to update an existing table, adding the created_by and updated_by fields; it needs an argument with the name of the table to update.
 
 ```bash
 php artisan blame:make:migration some_table_name
 ```
-When runned the above command will create a new migration file in the database/migrations folder with the name **add_blame_fields_to_some_table_name_table** with a content similar to this:
+When run, the above command will create a new migration file in the database/migrations folder with the name **add_blame_fields_to_some_table_name_table** with a content similar to this:
 
 ```php
 //database/migrations/2023_01_02_154102_add_blame_fields_to_some_table_name_table.php
@@ -143,11 +145,11 @@ php artisan blame:set:systemuser
 ```
 This command creates a new laravel user to be used when no user can be retrived with Auth::user(). 
 
-When runned with a value throug the optional "--key" param:
+When run with a value through the optional "--key" param:
 ```bash
 php artisan blame:set:systemuser --key=some_user_id
 ```
-The command will check if a user with that id exists and if not it will try to create one with that id.
+The command will check if a user with that id exists, and if not, it will try to create one with that id.
 
-In both cases the command will set the created system user primary key or id in the project .env file as BLAME_SYSTEM_USER_ID.
+In both cases, the command will set the created system user primary key or id in the project .env file as BLAME_SYSTEM_USER_ID.
 

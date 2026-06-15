@@ -9,8 +9,6 @@ use Kamansoft\LaravelBlame\Database\Migrations\BlameMigrationCreator;
 
 class BlameFieldsMigrationCommand extends BaseCommand
 {
-    public static string $system_user_id_const_name = 'BLAME_SYSTEM_USER_ID';
-
     /**
      * The name and signature of the console command.
      *
@@ -26,7 +24,7 @@ class BlameFieldsMigrationCommand extends BaseCommand
      *
      * @var string
      */
-    protected $description = 'Creates a new migration that add blaming ';
+    protected $description = 'Creates a new migration that adds blaming fields.';
 
     protected $creator;
 
@@ -50,28 +48,33 @@ class BlameFieldsMigrationCommand extends BaseCommand
      */
     public function handle(): int
     {
-        if (! $this->checkIfTableExits($this->argument('table'))) {
+        if (! $this->checkIfTableExists($this->argument('table'))) {
             return self::FAILURE;
         }
 
-        $migration_name = config('blame.migration_name_prefix').$this->argument('table').config('blame.migration_name_suffix');
+        $migrationName = config('blame.migration_name_prefix').$this->argument('table').config('blame.migration_name_suffix');
 
-        $this->writeMigration($migration_name, $this->argument('table'));
+        $this->writeMigration($migrationName, $this->argument('table'));
 
         return self::SUCCESS;
     }
 
-    public function checkIfTableExits(string $table_name): bool
+    public function checkIfTableExists(string $tableName): bool
     {
-        if (Schema::hasTable($table_name)) {
-            $this->info($table_name.' table exits..');
+        if (Schema::hasTable($tableName)) {
+            $this->info($tableName.' table exists.');
 
             return true;
         }
 
-        $this->error($table_name.' does NOT exits on db');
+        $this->error($tableName.' does NOT exist on db');
 
         return false;
+    }
+
+    public function checkIfTableExits(string $tableName): bool
+    {
+        return $this->checkIfTableExists($tableName);
     }
 
     /**

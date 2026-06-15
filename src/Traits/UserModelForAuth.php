@@ -2,11 +2,13 @@
 
 namespace Kamansoft\LaravelBlame\Traits;
 
+use Illuminate\Database\Eloquent\Model;
+
 trait UserModelForAuth
 {
-    private string $usersModelpkName = '';
+    private string $usersModelPkName = '';
 
-    private function getUserModelForAuthInstance()
+    private function getUserModelForAuthInstance(): Model
     {
         if (! $this->validateAuthEloquentModel()) {
             throw new \RuntimeException(static::class.' Needs an eloquent model to handle users from your persistent storage, you might set this as the users.model value at providers section the of auth config file.');
@@ -26,10 +28,10 @@ trait UserModelForAuth
 
     public function getUsersModelPkName(): string
     {
-        if (empty($this->usersModelpkName)) {
-            $this->usersModelpkName = $this->getUserModelForAuthInstance()->getKeyName();
+        if ($this->usersModelPkName === '') {
+            $this->usersModelPkName = $this->getUserModelForAuthInstance()->getKeyName();
         }
 
-        return $this->usersModelpkName;
+        return $this->usersModelPkName;
     }
 }

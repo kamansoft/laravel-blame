@@ -3,9 +3,14 @@
 build
 composer.lock
 coverage
-docs
 phpunit.xml
 phpstan.neon
 testbench.yaml
 vendor
 node_modules
+laravel-test-projects/**/.env
+laravel-test-projects/**/vendor
+laravel-test-projects/**/node_modules
+laravel-test-projects/**/storage/logs/*
+laravel-test-projects/**/bootstrap/cache/*
+!laravel-test-projects/**/bootstrap/cache/.gitignore

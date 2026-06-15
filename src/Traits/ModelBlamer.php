@@ -3,8 +3,8 @@
 namespace Kamansoft\LaravelBlame\Traits;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Kamansoft\LaravelBlame\BlameUserResolver;
 
 trait ModelBlamer
 {
@@ -22,32 +22,28 @@ trait ModelBlamer
 
     public function blameOnCreate(): void
     {
-        $creator_field_name = config('blame.created_by_field_name');
-        $updater_field_name = config('blame.updated_by_field_name');
+        $creatorFieldName = config('blame.created_by_field_name');
+        $updaterFieldName = config('blame.updated_by_field_name');
         $blamed = $this->getUserToBlamePk();
+
         Log::info(static::class.' on create, blames to user: '.$blamed);
-        $this->$creator_field_name = $this->$updater_field_name = $blamed;
+
+        $this->$creatorFieldName = $this->$updaterFieldName = $blamed;
     }
 
     public function getUserToBlamePk(): string
     {
-        $to_return = '';
-        if (Auth::check()) {
-            $to_return = Auth::user()->getKey();
-        } else {
-            Log::warning(static::class.' Not logged user using system user');
-            $to_return = config('blame.system_user_id');
-        }
-
-        return $to_return;
+        return app(BlameUserResolver::class)->resolveId();
     }
 
     public function blameOnUpdate(): void
     {
-        $updater_field_name = config('blame.updated_by_field_name');
+        $updaterFieldName = config('blame.updated_by_field_name');
         $blamed = $this->getUserToBlamePk();
+
         Log::info(static::class.' on update, blames to user: '.$blamed);
-        $this->$updater_field_name = $blamed;
+
+        $this->$updaterFieldName = $blamed;
     }
 
     /**

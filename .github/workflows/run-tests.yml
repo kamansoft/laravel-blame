@@ -10,16 +10,21 @@ jobs:
   test:
     runs-on: ${{ matrix.os }}
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest]
-        php: [8.2]
-        laravel: [9.*]
-        stability: [prefer-lowest, prefer-stable]
+        os: [ubuntu-latest]
+        php: [8.2, 8.3, 8.4]
+        laravel: [12.*, 13.*]
+        stability: [prefer-stable]
         include:
-          - laravel: 9.*
-            testbench: 7.*
-            carbon: ^2.63
+          - laravel: 12.*
+            testbench: 10.*
+            collision: ^8.0
+            carbon: ^2.72
+          - laravel: 13.*
+            testbench: 11.*
+            collision: ^9.0
+            carbon: ^2.72
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
 
@@ -31,7 +36,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, fileinfo
           coverage: none
 
       - name: Setup problem matchers
@@ -41,7 +46,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "nesbot/carbon:${{ matrix.carbon }}" --no-interaction --no-update
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "nesbot/carbon:${{ matrix.carbon }}" "nunomaduro/collision:${{ matrix.collision }}" --no-interaction --no-update
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction
 
       - name: List Installed Dependencies

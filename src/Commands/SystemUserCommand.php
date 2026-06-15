@@ -2,6 +2,7 @@
 
 namespace Kamansoft\LaravelBlame\Commands;
 
+use Illuminate\Database\Eloquent\Model;
 use Kamansoft\LaravelBlame\Contracts\HandleEnvFile;
 use Kamansoft\LaravelBlame\Traits\EnvFileHandler;
 use Kamansoft\LaravelBlame\Traits\UserModelForAuth;
@@ -19,7 +20,7 @@ class SystemUserCommand extends \Illuminate\Console\Command implements HandleEnv
      * @var string
      */
     protected $signature = 'blame:set:systemuser
-        {--key= : If a value is passed , this command will check for a user with that value as primary key,  if found, will set the system user id to that value, otherwise a new user with that primary key value  will be created }
+        {--key= : If a value is passed, this command will check for a user with that value as primary key. If found, it will set the system user id to that value, otherwise a new user with that primary key value will be created}
     ';
 
     /**
@@ -27,7 +28,7 @@ class SystemUserCommand extends \Illuminate\Console\Command implements HandleEnv
      *
      * @var string
      */
-    protected $description = 'Add the system user needed fields in a laravel project table, in order for models to work with laravel blame ';
+    protected $description = 'Create or identify the system user needed by laravel-blame.';
 
     /**
      * Execute the console command.
@@ -41,8 +42,10 @@ class SystemUserCommand extends \Illuminate\Console\Command implements HandleEnv
         }
 
         $key = $this->option('key');
+
         if (empty($key)) {
             $this->info('No user primary key value from command param');
+
             if (empty(env(static::$system_user_id_const_name))) {
                 $this->info('No user primary key value from env file');
             } else {
@@ -50,7 +53,7 @@ class SystemUserCommand extends \Illuminate\Console\Command implements HandleEnv
                 $key = env(static::$system_user_id_const_name);
             }
         } else {
-            $this->info('Got user primary key value from command  param');
+            $this->info('Got user primary key value from command param');
         }
 
         if ($this->checkAndSetSystemUser($key)) {
@@ -64,28 +67,37 @@ class SystemUserCommand extends \Illuminate\Console\Command implements HandleEnv
         return self::FAILURE;
     }
 
-    public function createNewSystemUserUser($key = null)
+    public function createNewSystemUser($key = null): mixed
     {
-        $system_user_data = [
+        $systemUserData = [
             'name' => config('blame.system_user_name'),
             'email' => config('blame.system_user_email'),
-            'password' => '', // you cant log in with this user
+            'password' => '',
         ];
-        $system_user = $this->getUserModelForAuthInstance()->fill($system_user_data);
-        $pkname = $this->getUsersModelPkName();
-        if (! empty($key)) {
-            $system_user->$pkname = $key;
-        }
-        $system_user->save();
 
-        return $system_user->getKey();
+        /** @var Model $systemUser */
+        $systemUser = $this->getUserModelForAuthInstance()->fill($systemUserData);
+        $primaryKeyName = $this->getUsersModelPkName();
+
+        if (! empty($key)) {
+            $systemUser->$primaryKeyName = $key;
+        }
+
+        $systemUser->save();
+
+        return $systemUser->getKey();
+    }
+
+    public function createNewSystemUserUser($key = null): mixed
+    {
+        return $this->createNewSystemUser($key);
     }
 
     public function checkAndSetSystemUser($key = null): bool
     {
         if (! $this->userWithPkExists($key)) {
             try {
-                $key = $this->createNewSystemUserUser($key);
+                $key = $this->createNewSystemUser($key);
             } catch (\Exception $exception) {
                 $this->error("Can't create new user");
                 $this->line($exception->getMessage());
@@ -94,13 +106,17 @@ class SystemUserCommand extends \Illuminate\Console\Command implements HandleEnv
             }
         }
 
-        return $this->setEnvValue(static::$system_user_id_const_name, $key);
+        return $this->setEnvValue(static::$system_user_id_const_name, (string) $key);
     }
 
     public function userWithPkExists($key): bool
     {
-        $user_model = config('auth.providers.users.model');
+        if ($key === null || $key === '') {
+            return false;
+        }
 
-        return $user_model::where($this->getUsersModelPkName(), $key)->exists();
+        $userModel = config('auth.providers.users.model');
+
+        return $userModel::where($this->getUsersModelPkName(), $key)->exists();
     }
 }

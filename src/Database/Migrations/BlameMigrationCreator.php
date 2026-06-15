@@ -48,10 +48,7 @@ class BlameMigrationCreator
     {
         $this->ensureMigrationDoesntAlreadyExist($name, $path);
 
-        // First we will get the stub file for the migration, which serves as a type
-        // of template for the migration. Once we have those we will populate the
-        // various place-holders, save the file, and run the post create event.
-        $stub = $this->getstub($table);
+        $stub = $this->getStub();
 
         $path = $this->getPath($name, $path);
 
@@ -61,9 +58,6 @@ class BlameMigrationCreator
             $path, $this->populateStub($name, $stub, $table)
         );
 
-        // Next, we will fire any hooks that are supposed to fire after a migration is
-        // created. Once that is done we'll be ready to return the full path to the
-        // migration file so it can be used however it's needed by the developer.
         $this->firePostCreateHooks($table);
 
         return $path;
@@ -96,10 +90,9 @@ class BlameMigrationCreator
     /**
      * Get the migration stub file.
      *
-     * @param  string|null  $table
      * @return string
      */
-    protected function getStub($table)
+    protected function getStub()
     {
         $stub = $this->files->exists($customPath = $this->customStubPath.'/migration.add.blaming.int.fields.stub')
             ? $customPath
@@ -123,9 +116,6 @@ class BlameMigrationCreator
             $this->getClassName($name), $stub
         );
 
-        // Here we will replace the table place-holders with the table specified by
-        // the developer, which is useful for quickly creating a tables creation
-        // or update migration from the console instead of typing it manually.
         if (! is_null($table)) {
             $stub = str_replace(
                 ['DummyTable', '{{ table }}', '{{table}}'],

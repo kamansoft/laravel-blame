@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+PROJECT_DIR="$ROOT_DIR/laravel-test-projects/laravel-13"
+SAIL_BIN="$PROJECT_DIR/vendor/bin/sail"
+
+if [[ ! -x "$SAIL_BIN" ]]; then
+  echo "Laravel 13 Sail binary not found. Run composer install in $PROJECT_DIR first." >&2
+  exit 1
+fi
+
+cd "$PROJECT_DIR"
+exec "$SAIL_BIN" "$@"

@@ -31,7 +31,7 @@ class BlameFieldsMigrationCommand extends BaseCommand
     /**
      * The Composer instance.
      *
-     * @var \Illuminate\Support\Composer
+     * @var Composer
      */
     protected $composer;
 

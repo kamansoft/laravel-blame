@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Kamansoft\LaravelBlame\LaravelBlameServiceProvider;
+use Kamansoft\LaravelBlame\Tests\Fixtures\TestUser;
 use Orchestra\Testbench\TestCase as Orchestra;
 
 class TestCase extends Orchestra
@@ -35,7 +36,7 @@ class TestCase extends Orchestra
             'prefix' => '',
         ]);
 
-        config()->set('auth.providers.users.model', \Kamansoft\LaravelBlame\Tests\Fixtures\TestUser::class);
+        config()->set('auth.providers.users.model', TestUser::class);
         $envFile = tempnam(sys_get_temp_dir(), 'laravel-blame-env-');
         file_put_contents($envFile, '');
         config()->set('blame.env_file_path', $envFile);

@@ -4,8 +4,8 @@ use Illuminate\Support\Facades\Auth;
 use Kamansoft\LaravelBlame\Tests\Fixtures\BlamedPost;
 use Kamansoft\LaravelBlame\Tests\Fixtures\CentralUser;
 use Kamansoft\LaravelBlame\Tests\Fixtures\CentralUserResolver;
-use Kamansoft\LaravelBlame\Tests\Fixtures\TestUser;
 use Kamansoft\LaravelBlame\Tests\Fixtures\TenantPost;
+use Kamansoft\LaravelBlame\Tests\Fixtures\TestUser;
 
 beforeEach(function (): void {
     $this->createUsersTable();

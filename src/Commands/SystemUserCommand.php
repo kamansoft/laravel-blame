@@ -2,12 +2,13 @@
 
 namespace Kamansoft\LaravelBlame\Commands;
 
+use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Model;
 use Kamansoft\LaravelBlame\Contracts\HandleEnvFile;
 use Kamansoft\LaravelBlame\Traits\EnvFileHandler;
 use Kamansoft\LaravelBlame\Traits\UserModelForAuth;
 
-class SystemUserCommand extends \Illuminate\Console\Command implements HandleEnvFile
+class SystemUserCommand extends Command implements HandleEnvFile
 {
     use EnvFileHandler;
     use UserModelForAuth;

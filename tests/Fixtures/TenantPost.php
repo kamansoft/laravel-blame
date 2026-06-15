@@ -9,6 +9,7 @@ use Kamansoft\LaravelBlame\Traits\ModelBlamer;
 class TenantPost extends Model implements ModelBlame
 {
     protected $table = 'tenant_posts';
+
     use ModelBlamer;
 
     public $timestamps = false;
